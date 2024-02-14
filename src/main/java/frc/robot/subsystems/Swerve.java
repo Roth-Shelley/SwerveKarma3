@@ -3,6 +3,8 @@ package frc.robot.subsystems;
 import java.util.function.Supplier;
 
 import com.kauailabs.navx.frc.AHRS;
+
+import frc.math.CoordinateSystems;
 import frc.robot.Constants;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
@@ -27,7 +29,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class Swerve extends SubsystemBase {
     public static SwerveModule[] mSwerveMods;
     public static AHRS gyro;
-    public static Field2d field2d;
+    private final Field2d field;;
     //static LEDs leds;
     public double maxSpeed = 1.2;
     double gyroThing;
@@ -39,10 +41,12 @@ public class Swerve extends SubsystemBase {
     SwerveDrivePoseEstimator odometry;
 
     public Swerve(VisionSubsystem vision) {
+        field = new Field2d();
+        SmartDashboard.putData("Field", field);
         this.vision = vision;
         gyro = new AHRS(SPI.Port.kMXP);
         zeroGyro();
-        field2d = new Field2d();
+       
         mSwerveMods = new SwerveModule[] {
             new SwerveModule(1, Constants.Swerve.Mod1.constants, Constants.Swerve.Mod1.invertedDrive, Constants.Swerve.Mod1.invertedSteer),
             new SwerveModule(3, Constants.Swerve.Mod3.constants, Constants.Swerve.Mod3.invertedDrive, Constants.Swerve.Mod3.invertedSteer),
@@ -51,8 +55,15 @@ public class Swerve extends SubsystemBase {
         };
         
 
-        odometry = new SwerveDrivePoseEstimator(Constants.Swerve.kinematics, getGyro(), getModulePositions(), new Pose2d(),
+
+        
+        odometry = new SwerveDrivePoseEstimator(Constants.Swerve.kinematics, getGyro().unaryMinus(), getModulePositions(), new Pose2d(new Translation2d(-8.27+0.45, 1.4478), new Rotation2d(Math.PI)),
              stateStdDevs, visionMeasurementStdDevs);
+
+             field.setRobotPose(CoordinateSystems.FieldMiddle_FieldBottomLeft(getPose()));
+             SmartDashboard.putNumber("xInitial", CoordinateSystems.FieldMiddle_FieldBottomLeft(getPose()).getX());
+              SmartDashboard.putNumber("yInitial", CoordinateSystems.FieldMiddle_FieldBottomLeft(getPose()).getY());
+        
 
                 
     }
@@ -127,6 +138,7 @@ public class Swerve extends SubsystemBase {
 
     public Pose2d getPose() {
         return odometry.getEstimatedPosition();
+        
     }
     public Rotation2d getRoll(){
         return Rotation2d.fromDegrees(gyro.getRoll());
@@ -154,6 +166,10 @@ public class Swerve extends SubsystemBase {
             SmartDashboard.putNumber("Mod " + mod.moduleNumber + " Integrated", mod.getState().angle.getDegrees());
             SmartDashboard.putNumber("Mod " + mod.moduleNumber + " Velocity", mod.getState().speedMetersPerSecond);    
         }
+        //field.setRobotPose(CoordinateSystems.FieldMiddle_FieldBottomLeft(odometry.getEstimatedPosition()));
+
+
+
     }
 
     

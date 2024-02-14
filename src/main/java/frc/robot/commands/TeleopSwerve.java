@@ -3,6 +3,7 @@ package frc.robot.commands;
 import frc.robot.Constants;
 import frc.robot.subsystems.Swerve;
 import frc.robot.subsystems.VisionSubsystem;
+import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -27,13 +28,12 @@ public class TeleopSwerve extends Command {
     double maxSpeed = 1;
     
 
-    public TeleopSwerve(Swerve s_Swerve, XboxController controller, BooleanSupplier fieldRelative, VisionSubsystem vision) {
+    public TeleopSwerve(Swerve s_Swerve, XboxController controller, BooleanSupplier fieldRelative) {
         this.s_Swerve = s_Swerve;
-        addRequirements(s_Swerve, vision);
+        addRequirements(s_Swerve);
         this.fieldRelative = fieldRelative;
         this.controller = controller;
-        this.Vision = vision;
-       
+ 
     }
 
 
@@ -52,16 +52,16 @@ public class TeleopSwerve extends Command {
         
         
     
-         double PIDintake = Vision.getRotationPID();
 
         yAxis = Math.copySign(yAxis * yAxis, Math.signum(yAxis));
         xAxis = Math.copySign(xAxis * xAxis, Math.signum(xAxis));
-        rAxis = Math.copySign(rAxis * rAxis, Math.signum(rAxis)) + PIDintake;
+        rAxis = Math.copySign(rAxis * rAxis, Math.signum(rAxis));
         yAxis = (Math.abs(yAxis) < Constants.stickDeadband) ? 0 : yAxis;
         xAxis = (Math.abs(xAxis) < Constants.stickDeadband) ? 0 : xAxis;
         rAxis = (Math.abs(rAxis) < Constants.stickDeadband) ? 0 : rAxis;
         translation = new Translation2d(xAxis, yAxis);
         rotation = rAxis * Constants.Swerve.maxAngularVelocity;
+        
 
         s_Swerve.drive(translation.times(0.65), rotation * 0.65, isFieldRelative);
     }

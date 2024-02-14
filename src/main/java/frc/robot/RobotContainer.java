@@ -35,7 +35,7 @@ private final VisionSubsystem vision = new VisionSubsystem();
  // private final TelescopicArm m_arm = new TelescopicArm();
  // private final autoChooser chooser = new autoChooser(m_arm, m_intake, s_Swerve);
   public RobotContainer() {
-    tele =  new TeleopSwerve(s_Swerve, driver, () -> !driver.getLeftBumper(), vision);
+    tele =  new TeleopSwerve(s_Swerve, driver, () -> !driver.getLeftBumper());
 
 
    s_Swerve.setDefaultCommand(tele);
@@ -44,10 +44,10 @@ private final VisionSubsystem vision = new VisionSubsystem();
   }
 
   private void configureBindings() {
-    AlignIntake aligner = new AlignIntake(s_Swerve, vision, new PIDController(3, 0, 0));
+    AlignIntake aligner = new AlignIntake(s_Swerve, driver,  () -> !driver.getLeftBumper(), vision, new PIDController(100, 0, 0));
 
    new Trigger(driver::getXButton).whileTrue(aligner);
-     //new Trigger(driver::getAButton).onTrue(runOnce(s_Swerve::resetEveything));
+   new Trigger(driver::getAButton).onTrue(runOnce(s_Swerve::resetEveything));
     
     
   }

@@ -51,7 +51,7 @@ public class VisionSubsystem extends SubsystemBase{
 
     public double translationToTargetX;
     public double translationToTargetY;
-    public String LL2name = "limelight2";
+    public String LL2name = "limelight";
     public String LL3name = "limelight";
 
     NetworkTableEntry botposeEntry;
@@ -80,7 +80,7 @@ public class VisionSubsystem extends SubsystemBase{
         SmartDashboard.putData("Alliance Color", AllianceColor);
 
 
-        SmartDashboard.putData("Field", field);
+        SmartDashboard.putData("FieldVision", field);
 
 
        
@@ -200,7 +200,7 @@ public class VisionSubsystem extends SubsystemBase{
     data = botposeEntry.getDoubleArray(new double[7]);
     Pose2d currentPoseFIELDRELATIVE = new Pose2d(data[0], data[1], new Rotation2d(data[4]));
 
-    field.setRobotPose(CoordinateSystems.FieldMiddle_FieldBottomLeft(currentPoseFIELDRELATIVE));
+   field.setRobotPose(CoordinateSystems.FieldMiddle_FieldBottomLeft(currentPoseFIELDRELATIVE));
 
 
 
@@ -213,6 +213,7 @@ Pose2d currentPose = new Pose2d();
 
     if (!isBlue) {
          currentPose = CoordinateSystems.RightSide_FieldToRob(currentPoseFIELDRELATIVE);
+
     }
 
     if (isBlue) {
@@ -222,18 +223,11 @@ Pose2d currentPose = new Pose2d();
     if (!hasInitialPose) {
         startingpos = currentPose;
         hasInitialPose = true;
-        
-
-
-    
-
-
-
-
-    
-}
+    }
 
 isNew = true;
+Rotation2d rotation = currentPose.getRotation().unaryMinus();
+currentPose = new Pose2d(currentPose.getTranslation(), rotation);
     poseAndTimestamp = new PoseAndTimestamp(currentPose, data[6], LimelightTargetCalculator.calculateCoefficient(currentPose));
  SmartDashboard.putBoolean("Has InitPose", hasInitialPose);
   
@@ -256,13 +250,14 @@ isNew = true;
 
 
  llresultsDETECTION = LimelightHelpers.getLatestResults(LL3name).targetingResults;
+ SmartDashboard.putBoolean("limelight coming through?" , llresultsDETECTION.valid);
 
  if (!tx.isEmpty()) {
  tx.clear();
  ta.clear();
  ty.clear();
  }
- if (NetworkTableInstance.getDefault().getTable(LL3name).getEntry("tv").getInteger(0) == 1) {
+ if (NetworkTableInstance.getDefault().getTable(LL3name).getEntry("tv").getInteger(0) == 1.0) {
 SmartDashboard.putNumber("1 if limelight has detected a note", 1);
    for (int i = 0;  i < llresultsDETECTION.targets_Detector.length; i++) {
    tx.add( llresultsDETECTION.targets_Detector[i].tx);
