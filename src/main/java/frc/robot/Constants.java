@@ -259,6 +259,15 @@ public final class Constants {
         public static final double width = Units.feetToMeters(27);
     }
 
+    public static final class IntakeConstants{
+        public final static int intakeMotorID = 21;
+    }
+    public static final class RampConstants{
+                    public final static int rampMotorID = 12;
+                    public final static double thresholdVelocityforRamp = 0;
+                    public final static double beamBreakSensorID = 0;
+            }
+
 //     public static class VisionConstants {
 //         public static final int conePipeline = 1;
 //         public static final int cubePipeline = 2;
