@@ -99,10 +99,11 @@ import edu.wpi.first.wpilibj2.command.Command;
 
 public class AlignIntake extends Command {
 
-    private double rotation;
+    
     private Translation2d translation;
     private BooleanSupplier fieldRelative;
     private VisionSubsystem Vision;
+    private double rotation;
   
     
     private Swerve s_Swerve;
@@ -128,9 +129,10 @@ public class AlignIntake extends Command {
     public void execute() {
         if (Vision.getDetection()[0] != 0 && Vision.getDetection()[1] != 0) {
           
-    double rotation = PIDController.calculate(Vision.getDetection()[0]);
+     rotation = PIDController.calculate(Vision.getDetection()[0]);
+     SmartDashboard.putNumber("visionX", Vision.getDetection()[0]);
            SmartDashboard.putString("did the alignintake get a detection", "yessir");
-           SmartDashboard.putNumber("rotation setting in alignintake", rotation);
+           
      
 
     
@@ -139,34 +141,38 @@ public class AlignIntake extends Command {
 
          }
          else {
-            double rotation = 0;
+             rotation = 0;
      
             SmartDashboard.putString("did the alignintake get a detection", "nope lmao u suck");
          }
 
         boolean isFieldRelative = fieldRelative.getAsBoolean();
-        SmartDashboard.putBoolean("FieldRelative", isFieldRelative);
-        double yAxis = 0;
-        double xAxis = 0;
-        double rAxis = 0;
+      
 
-         yAxis = -controller.getLeftY();
-         xAxis = -controller.getLeftX();
+         double yAxis = -controller.getLeftY();
+         double xAxis = -controller.getLeftX();
     
       
 
         yAxis = Math.copySign(yAxis * yAxis, Math.signum(yAxis));
         xAxis = Math.copySign(xAxis * xAxis, Math.signum(xAxis));
-        rAxis = rotation;
+
 
         yAxis = (Math.abs(yAxis) < Constants.stickDeadband) ? 0 : yAxis;
         xAxis = (Math.abs(xAxis) < Constants.stickDeadband) ? 0 : xAxis;
-        rAxis = (Math.abs(rAxis) < Constants.stickDeadband) ? 0 : rAxis;
+    
         translation = new Translation2d(xAxis, yAxis);
-        rotation = rAxis * Constants.Swerve.maxAngularVelocity;
+        if (rotation > Constants.Swerve.maxAngularVelocity) {
+            rotation = Constants.Swerve.maxAngularVelocity;
+        }
+        else if (rotation < -Constants.Swerve.maxAngularVelocity) {
+            rotation = -Constants.Swerve.maxAngularVelocity;
+        }
+      SmartDashboard.putNumber("rotation setting in alignintake", rotation);
+
   
 
-        s_Swerve.drive(translation.times(0.65), rotation * 0.65, isFieldRelative);
+        s_Swerve.drive(translation.times(0.65), -rotation, isFieldRelative);
     }
 }
 

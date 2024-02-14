@@ -44,7 +44,7 @@ private final VisionSubsystem vision = new VisionSubsystem();
   }
 
   private void configureBindings() {
-    AlignIntake aligner = new AlignIntake(s_Swerve, driver,  () -> !driver.getLeftBumper(), vision, new PIDController(100, 0, 0));
+    AlignIntake aligner = new AlignIntake(s_Swerve, driver,  () -> !driver.getLeftBumper(), vision, new PIDController(1.3, 0, 0));
 
    new Trigger(driver::getXButton).whileTrue(aligner);
    new Trigger(driver::getAButton).onTrue(runOnce(s_Swerve::resetEveything));
