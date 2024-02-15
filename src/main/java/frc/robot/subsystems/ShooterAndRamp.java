@@ -24,6 +24,8 @@ public class ShooterAndRamp extends SubsystemBase {
     RelativeEncoder shooterLeftEncoder = shooterLeftMotor.getEncoder();
     RelativeEncoder shooterRightEncoder = shooterRightMotor.getEncoder();
 
+    public String currentState; 
+
 
 
 
@@ -36,7 +38,6 @@ public class ShooterAndRamp extends SubsystemBase {
         rampLeftEncoder.setPosition(0);
         rampRightEncoder.setPosition(0);
 
-
         // intakeMotor.follow(intakeMotor);
         // rampMotor.follow(rampMotor);
 
@@ -46,16 +47,68 @@ public class ShooterAndRamp extends SubsystemBase {
         SHOOTING,
         AMPING,
         HANDOFF_ARM,
-        
-
     }
-    
+
+    public States whichStateAreWeCurrentlyIn() {
+        if(currentState.equals("HOME")) {
+            return States.HOME;
+        }
+        else if(currentState.equals("SHOOTING")) {
+            return States.SHOOTING;
+        }
+        else if(currentState.equals("AMPING")) {
+            return States.AMPING;
+        }
+        else if(currentState.equals("HANDOFF_ARM")) {
+            return States.HANDOFF_ARM;
+        }
+        else {
+            return States.HOME;
+        }
+        }
+
 
 
     public void setRampMotorSpeed(double speed) {
         rampLeftMotor.set(speed);
         rampRightMotor.set(-speed);
     }
+
+    public void executeRampState(String state) {
+        switch(currentState) {
+            case "HOME":
+                setRampMotorSpeed(0);
+                break;
+            case "SHOOTING":
+                setRampMotorSpeed(0.5);
+                break;
+            case "AMPING":
+                setRampMotorSpeed(0.5);
+                break;
+            case "HANDOFF_ARM":
+                setRampMotorSpeed(0.5);
+                break;
+        }
+    }
+
+ public void executeRampState(States state) {
+        String currentState = state.toString();
+        switch(currentState) {
+            case "HOME":
+                setRampMotorSpeed(0);
+                break;
+            case "SHOOTING":
+                setRampMotorSpeed(0.5);
+                break;
+            case "AMPING":
+                setRampMotorSpeed(0.5);
+                break;
+            case "HANDOFF_ARM":
+                setRampMotorSpeed(0.5);
+                break;
+        }
+    }
+
 
 
 

@@ -83,6 +83,7 @@
     package frc.robot.commands;
 
 import frc.robot.Constants;
+import frc.robot.subsystems.ShooterAndRamp;
 import frc.robot.subsystems.Swerve;
 import frc.robot.subsystems.VisionSubsystem;
 import edu.wpi.first.wpilibj.DataLogManager;
@@ -104,23 +105,26 @@ public class AlignIntake extends Command {
     private BooleanSupplier fieldRelative;
     private VisionSubsystem Vision;
     private double rotation;
+    private ShooterAndRamp shooterAndRamp;
   
     
     private Swerve s_Swerve;
+    
     private XboxController controller;
     SlewRateLimiter limiter = new SlewRateLimiter(3);
     double maxSpeed = 1;
     private PIDController PIDController;
     
 
-    public AlignIntake(Swerve s_Swerve, XboxController controller, BooleanSupplier fieldRelative, VisionSubsystem vision, PIDController rotationPID) {
+    public AlignIntake(Swerve s_Swerve, XboxController controller, BooleanSupplier fieldRelative, VisionSubsystem vision, PIDController rotationPID, ShooterAndRamp shooterAndRamp) {
         this.s_Swerve = s_Swerve;
         addRequirements(s_Swerve);
         this.fieldRelative = fieldRelative;
         this.controller = controller;
         this.Vision = vision;
         this.PIDController = rotationPID;
-       
+        this.shooterAndRamp = shooterAndRamp;
+
     }
 
 
@@ -169,9 +173,8 @@ public class AlignIntake extends Command {
             rotation = -Constants.Swerve.maxAngularVelocity;
         }
       SmartDashboard.putNumber("rotation setting in alignintake", rotation);
-
+      SmartDashboard.putString("State of ramp", shooterAndRamp.whichState().toString());
   
-
         s_Swerve.drive(translation.times(0.65), -rotation, isFieldRelative);
     }
 }

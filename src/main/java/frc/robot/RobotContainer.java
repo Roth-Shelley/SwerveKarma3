@@ -13,9 +13,11 @@ import frc.robot.subsystems.VisionSubsystem;
 
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.AlignIntake;
+import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.ReverseIntakeCommand;
 import frc.robot.commands.TeleopSwerve;
 import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.ShooterAndRamp;
 //import frc.robot.commands.Auto.AutoPaths.autoChooser;
 //import frc.robot.subsystems.Intake;
 //import frc.robot.subsystems.LEDs;
@@ -34,6 +36,7 @@ public class RobotContainer {
 private final VisionSubsystem vision = new VisionSubsystem();
 private final Swerve s_Swerve = new Swerve(vision);
 private final Intake m_intake = new Intake();
+private final ShooterAndRamp m_ShooterAndRamp = new ShooterAndRamp();
  
   
  // private final TelescopicArm m_arm = new TelescopicArm();
@@ -48,12 +51,17 @@ private final Intake m_intake = new Intake();
   }
 
   private void configureBindings() {
-    AlignIntake aligner = new AlignIntake(s_Swerve, driver,  () -> !driver.getLeftBumper(), vision, new PIDController(1.3, 0, 0));
+    AlignIntake aligner = new AlignIntake(s_Swerve, driver,  () -> !driver.getLeftBumper(), vision, new PIDController(1.3, 0, 0), m_ShooterAndRamp);
 
    new Trigger(driver::getXButton).whileTrue(aligner);
    new Trigger(driver::getAButton).onTrue(runOnce(s_Swerve::resetEveything));
    new Trigger(coDriver::getYButton).whileTrue(runOnce( () -> new ReverseIntakeCommand(m_intake)));
-    
+   new Trigger(coDriver::getXButton).whileTrue(runOnce( () -> new IntakeCommand(m_intake)));
+
+  }
+
+  public ShooterAndRamp getShooterAndRamp() {
+    return m_ShooterAndRamp;
   }
 
 
