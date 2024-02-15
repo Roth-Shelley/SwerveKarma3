@@ -1,18 +1,25 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.subsystems.Intake;
+
 
 public class IntakeCommand extends Command {
 
-    public IntakeCommand() {
+    private final Intake intake;
 
+    public IntakeCommand(Intake intakeSubystem) {
+        this.intake = intakeSubystem;
+        addRequirements(intakeSubystem);
     }
 
+    public void execute() {
+        //write code that makes the motor move with a game controller speed
+        
+
+    }
 
     public void end(boolean interrupted) {
     }
 
-    public void execute() {
-
-    }
 }
