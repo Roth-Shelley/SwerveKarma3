@@ -15,7 +15,7 @@ public class IntakeCommand extends Command {
 
     public void execute() {
         //write code that makes the motor move with a game controller speed
-        
+        intake.setIntakeMotorSpeed(0.5);
 
     }
 
