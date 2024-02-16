@@ -215,10 +215,11 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
+import frc.robot.Constants.PipelineConstants;
 import frc.robot.subsystems.Swerve;
 import frc.robot.subsystems.VisionSubsystem;
 
-class AligntoSpeaker extends Command {
+public class AligntoSpeaker extends Command {
     double visionAngle;
     private final Swerve swervy;
     private final VisionSubsystem vision;
@@ -240,20 +241,20 @@ public AligntoSpeaker(Swerve swerve, VisionSubsystem vision, PIDController rotat
     addRequirements(swervy);
 
     tx = 0;
-    if (vision.isBlue) {
-    vision.setPipelineLL3(Constants.PipelineConstants.SPEAKERBLUE);
-    }
-    else {
-        vision.setPipelineLL3(Constants.PipelineConstants.SPEAKERRED);
-    }
+    
 }
 
 public void execute() {
      isfieldRelative = fieldrelative.getAsBoolean();
      tx = vision.getSpeakerDetection();
-     double PidSetpoint = rotationPID.calculate(tx);
-      boolean isFieldRelative = fieldrelative.getAsBoolean();
-      
+     if (tx != 10000) {
+
+     
+    double PidSetpoint = rotationPID.calculate(tx);
+    boolean isFieldRelative = fieldrelative.getAsBoolean();
+     }   
+     
+     else  { 
 
          double yAxis = -xbox.getLeftY();
          double xAxis = -xbox.getLeftX();
@@ -281,6 +282,7 @@ public void execute() {
      
 
 
+}
 }
 }
 

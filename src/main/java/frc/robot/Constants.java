@@ -266,15 +266,14 @@ public final class Constants {
     }
 
     public static class PipelineConstants {
-        public static final int SPEAKERBLUE = 3;
+        public static final int SPEAKERBLUE = 8;
         public static final int pipelineLL2 = 2;
         public static final int pipelineLL1 = 1;
         public static final int pipelineLL0 = 0;
         public static final int SPEAKERRED = 9;
         public static final int AMPBLUE = 0;
-        public static final int AMPRED = 0;}
-
-    public static final class IntakeConstants{
+        public static final int AMPRED = 0;
+        public static int FiducialTargets;
         public final static int intakeMotorID = 21;
     }
     public static final class RampConstants{
@@ -282,6 +281,7 @@ public final class Constants {
                     public final static double thresholdVelocityforRamp = 0;
                     public final static double beamBreakSensorID = 0;
             }
+        }
 
 //     public static class VisionConstants {
 //         public static final int conePipeline = 1;
@@ -348,4 +348,3 @@ public final class Constants {
 //         public static final double SECOND_SIDE_ANGLE = 10;
 //     }
 // }
-}

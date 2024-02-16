@@ -55,7 +55,30 @@ public class TeleopSwerve extends Command {
 
         yAxis = Math.copySign(yAxis * yAxis, Math.signum(yAxis));
         xAxis = Math.copySign(xAxis * xAxis, Math.signum(xAxis));
-        rAxis = Math.copySign(rAxis * rAxis, Math.signum(rAxis));
+        
+        
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
         yAxis = (Math.abs(yAxis) < Constants.stickDeadband) ? 0 : yAxis;
         xAxis = (Math.abs(xAxis) < Constants.stickDeadband) ? 0 : xAxis;
         rAxis = (Math.abs(rAxis) < Constants.stickDeadband) ? 0 : rAxis;

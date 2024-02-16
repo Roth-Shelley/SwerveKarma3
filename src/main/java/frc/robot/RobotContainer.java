@@ -10,7 +10,8 @@ import static edu.wpi.first.wpilibj2.command.Commands.runOnce;
 
 import edu.wpi.first.math.controller.PIDController;
 import frc.robot.subsystems.VisionSubsystem;
-
+import frc.robot.commands.AligntoSpeaker;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.Intake;
 import frc.robot.commands.AlignIntake;
@@ -53,7 +54,8 @@ private final ShooterAndRamp m_ShooterAndRamp = new ShooterAndRamp();
   private void configureBindings() {
     AlignIntake aligner = new AlignIntake(s_Swerve, driver,  () -> !driver.getLeftBumper(), vision, new PIDController(1.3, 0, 0), m_ShooterAndRamp);
 
-   new Trigger(driver::getXButton).whileTrue(aligner);
+
+   new Trigger(driver::getXButton).whileTrue(new AligntoSpeaker(s_Swerve, vision, new PIDController(0, 0, 0), ));
    new Trigger(driver::getAButton).onTrue(runOnce(s_Swerve::resetEveything));
     
     
