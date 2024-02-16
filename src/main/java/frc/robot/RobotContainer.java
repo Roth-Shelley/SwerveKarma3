@@ -55,8 +55,9 @@ private final ShooterAndRamp m_ShooterAndRamp = new ShooterAndRamp();
     AlignIntake aligner = new AlignIntake(s_Swerve, driver,  () -> !driver.getLeftBumper(), vision, new PIDController(1.3, 0, 0), m_ShooterAndRamp);
 
 
-   new Trigger(driver::getXButton).whileTrue(new AligntoSpeaker(s_Swerve, vision, new PIDController(0, 0, 0), ));
+   new Trigger(driver::getXButton).whileTrue(new AligntoSpeaker(s_Swerve, vision, new PIDController(1.3, 0, 0), driver,  () -> !driver.getLeftBumper()));
    new Trigger(driver::getAButton).onTrue(runOnce(s_Swerve::resetEveything));
+   
     
     
   }

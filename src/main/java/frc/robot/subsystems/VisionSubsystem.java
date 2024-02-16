@@ -23,6 +23,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.math.CoordinateSystems;
 import frc.math.LimelightTargetCalculator;
+import frc.robot.Constants;
 
 public class VisionSubsystem extends SubsystemBase{
 
@@ -69,6 +70,9 @@ public class VisionSubsystem extends SubsystemBase{
     ArrayList<Double> ta = new ArrayList<>();
     ArrayList<Double> tx = new ArrayList<>();
     ArrayList<Double> ty = new ArrayList<>();
+
+    ArrayList<Double> txFiducial = new ArrayList<>();
+    ArrayList<Double> IndexFiducial = new ArrayList<>();
     private double rotationPID = 0;
 
 
@@ -260,6 +264,9 @@ isNew = true;
 
 
  }
+ //////////////////////////////////////////////////////////////////////////////////////////
+
+ //object detection
 
 
 
@@ -271,6 +278,11 @@ isNew = true;
  tx.clear();
  ta.clear();
  ty.clear();
+ }
+
+ if (!txFiducial.isEmpty()) {
+    txFiducial.clear();
+    IndexFiducial.clear();
  }
  if (NetworkTableInstance.getDefault().getTable(LL3name).getEntry("tv").getInteger(0) == 1.0) {
 SmartDashboard.putNumber("1 if limelight has detected a note", 1);
@@ -285,6 +297,14 @@ SmartDashboard.putNumber("1 if limelight has detected a note", 1);
 else {
     SmartDashboard.putNumber("1 if limelight has detected a note", 0);
 }
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+for (int i = 0; i < llresultsDETECTION.targets_Fiducials.length; i++) {
+    txFiducial.add(llresultsDETECTION.targets_Fiducials[i].tx);
+    IndexFiducial.add(llresultsDETECTION.targets_Fiducials[i].fiducialID);
+}
+
+
 
 
 
@@ -336,6 +356,8 @@ public double[] getDetection() {
 
 }
 
+
+
       
 
 
@@ -363,21 +385,25 @@ public void setSwerve(Swerve swervy) {
     hasSwerve = true;
 
 }
-public void setPipelineLL3(int pipeline) {
-    NetworkTableInstance.getDefault().getTable(LL3name).getEntry("pipeline").setNumber(pipeline);
 
+public void setPipelineLL3(int index) {
+    LimelightHelpers.setPipelineIndex(LL3name, index);
+    
 }
-public void setPipelineLL2(int pipeline) {
-    NetworkTableInstance.getDefault().getTable(LL2name).getEntry("pipeline").setNumber(pipeline);
+public void setPipelineLL2(int index) {
+    LimelightHelpers.setPipelineIndex(LL2name, index);
 }
-
 
 public double getSpeakerDetection() {
-    if (NetworkTableInstance.getDefault().getTable(LL3name).getEntry("tv").getInteger(0) == 1) {
-        return tx.get(0);
+    double val = 0;
+    for (int i = 0; i<txFiducial.size(); i++) {
+        if(IndexFiducial.get(i) == Constants.PipelineConstants.SPEAKERBLUE) {
+            val = txFiducial.get(i);
+
+        }
+
     }
-    else {
-        return 0;
-    }
+    return val;
 }
+
 }
