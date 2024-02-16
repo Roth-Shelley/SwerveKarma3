@@ -34,11 +34,12 @@ public class Swerve extends SubsystemBase {
     public double maxSpeed = 1.2;
     double gyroThing;
     VisionSubsystem vision;
+
     private static final Vector<N3> stateStdDevs = VecBuilder.fill(0.05, 0.05, Units.degreesToRadians(5));
 
-  private static final Vector<N3> visionMeasurementStdDevs = VecBuilder.fill(0.1, 0.1, Units.degreesToRadians(10));
+  private static final Vector<N3> visionMeasurementStdDevs = VecBuilder.fill(0.5, 0.5, Units.degreesToRadians(10));
 
-    SwerveDrivePoseEstimator odometry;
+    public SwerveDrivePoseEstimator odometry;
 
     public Swerve(VisionSubsystem vision) {
         field = new Field2d();
@@ -57,13 +58,13 @@ public class Swerve extends SubsystemBase {
 
 
         
-        odometry = new SwerveDrivePoseEstimator(Constants.Swerve.kinematics, getGyro().unaryMinus(), getModulePositions(), new Pose2d(new Translation2d(-8.27+0.45, 1.4478), new Rotation2d(Math.PI)),
+        odometry = new SwerveDrivePoseEstimator(Constants.Swerve.kinematics, getGyro(), getModulePositions(), new Pose2d(new Translation2d(-8.27+0.45, 1.4478), new Rotation2d(Math.PI)),
              stateStdDevs, visionMeasurementStdDevs);
 
-             field.setRobotPose(CoordinateSystems.FieldMiddle_FieldBottomLeft(getPose()));
-             SmartDashboard.putNumber("xInitial", CoordinateSystems.FieldMiddle_FieldBottomLeft(getPose()).getX());
-              SmartDashboard.putNumber("yInitial", CoordinateSystems.FieldMiddle_FieldBottomLeft(getPose()).getY());
-        
+
+
+            
+
 
                 
     }
@@ -150,14 +151,22 @@ public class Swerve extends SubsystemBase {
 
     @Override
     public void periodic(){
+        SmartDashboard.putBoolean("periodic of swerve is called", true);
 
         odometry.update(getGyro(), getModulePositions());
-        if(vision.isNew) {
+        if(vision.isNew && vision.hasInitialPose) {
+            SmartDashboard.putBoolean("vision is new", true);
             
              odometry.addVisionMeasurement(vision.getVision().getPose(), vision.getVision().getTimestamp());
        
 
         }
+        else {
+            SmartDashboard.putBoolean("vision is new", false);
+        }
+        SmartDashboard.putNumber("xLocalization", odometry.getEstimatedPosition().getX());
+        SmartDashboard.putNumber("yLocalization", odometry.getEstimatedPosition().getY());
+        SmartDashboard.putNumber("Rotation", odometry.getEstimatedPosition().getRotation().getDegrees());
         
        
 

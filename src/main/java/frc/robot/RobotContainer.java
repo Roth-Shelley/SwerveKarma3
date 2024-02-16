@@ -13,7 +13,9 @@ import frc.robot.subsystems.VisionSubsystem;
 
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.AlignIntake;
+import frc.robot.commands.Climb;
 import frc.robot.commands.TeleopSwerve;
+import frc.robot.subsystems.Climber;
 //import frc.robot.commands.Auto.AutoPaths.autoChooser;
 //import frc.robot.subsystems.Intake;
 //import frc.robot.subsystems.LEDs;
@@ -38,7 +40,9 @@ private final VisionSubsystem vision = new VisionSubsystem();
     tele =  new TeleopSwerve(s_Swerve, driver, () -> !driver.getLeftBumper());
 
 
-   s_Swerve.setDefaultCommand(tele);
+    s_Swerve.setDefaultCommand(tele);
+    //Climber BOOMBOOM = new Climber();
+    //BOOMBOOM.setDefaultCommand(new Climb(driver));
     
     configureBindings();
   }
@@ -48,6 +52,8 @@ private final VisionSubsystem vision = new VisionSubsystem();
 
    new Trigger(driver::getXButton).whileTrue(aligner);
    new Trigger(driver::getAButton).onTrue(runOnce(s_Swerve::resetEveything));
+
+   
     
     
   }

@@ -30,11 +30,14 @@ public class VisionSubsystem extends SubsystemBase{
     
 
    // public  Pose2d pose_final;
-   
+   private Pose2d mySwerve;
+   private Pose2d currentPose;
     public Results llresultsDETECTION;
     public double rotation;
     public double timestamp;
     public boolean isNew; // is new pose
+    
+    public Pose2d currentPoseFIELDRELATIVE;
     private final Field2d field = new Field2d();
 
     public double maxAmbiguity;
@@ -67,6 +70,10 @@ public class VisionSubsystem extends SubsystemBase{
     ArrayList<Double> tx = new ArrayList<>();
     ArrayList<Double> ty = new ArrayList<>();
     private double rotationPID = 0;
+
+
+    Swerve SWERVO;
+    private boolean hasSwerve = false;
     
     
    
@@ -80,7 +87,7 @@ public class VisionSubsystem extends SubsystemBase{
         SmartDashboard.putData("Alliance Color", AllianceColor);
 
 
-        SmartDashboard.putData("FieldVision", field);
+       SmartDashboard.putData("FieldVision", field);
 
 
        
@@ -94,7 +101,7 @@ public class VisionSubsystem extends SubsystemBase{
         data = botposeEntry.getDoubleArray(new double[7]);
         Pose2d initPose = new Pose2d(data[0], data[1], new Rotation2d(data[4]));
         SmartDashboard.putBoolean("FIELD IS BEING SET", true);
-         field.setRobotPose(CoordinateSystems.FieldMiddle_FieldBottomLeft(initPose));
+
 
          if (!isBlue) {
          startingpos = CoordinateSystems.RightSide_FieldToRob(initPose);
@@ -154,12 +161,11 @@ public class VisionSubsystem extends SubsystemBase{
  class PoseAndTimestamp {
     private Pose2d pose;
     private double timestamp;
-    private double TrustCoefficient;
-
-    public PoseAndTimestamp(Pose2d pose, double timestamp, double TrustCoefficient) {
+   
+    public PoseAndTimestamp(Pose2d pose, double timestamp) {
         this.pose = pose;
         this.timestamp = timestamp;
-        this.TrustCoefficient = TrustCoefficient;
+        
         // this.isNew = isNew;
     }
 
@@ -171,9 +177,7 @@ public class VisionSubsystem extends SubsystemBase{
         return timestamp;
     }
 
-    public double getTrustCoefficient() {
-        return TrustCoefficient;
-    }
+  
     // public boolean getisNew() {
     //     return isNew;
     // }
@@ -182,11 +186,11 @@ public class VisionSubsystem extends SubsystemBase{
 
 
  public void periodic() {
-    SmartDashboard.putNumber("rotationPIDinSubsystem", rotationPID);
+    
     if (RobotState.isEnabled()) {
 
     isBlue = AllianceColor.getSelected();
-    LimelightTargetCalculator LimelightTargetCalculator = new LimelightTargetCalculator(isBlue);
+   
  
      botposeEntry = NetworkTableInstance.getDefault().getTable(LL2name).getEntry("botpose");
 
@@ -198,16 +202,24 @@ public class VisionSubsystem extends SubsystemBase{
         isNew = true;
    
     data = botposeEntry.getDoubleArray(new double[7]);
-    Pose2d currentPoseFIELDRELATIVE = new Pose2d(data[0], data[1], new Rotation2d(data[4]));
-
-   field.setRobotPose(CoordinateSystems.FieldMiddle_FieldBottomLeft(currentPoseFIELDRELATIVE));
-
+     currentPoseFIELDRELATIVE = new Pose2d(data[0], data[1], new Rotation2d(data[4]));
+if (hasSwerve) {
+    
+    if (!isBlue) {
+        mySwerve = CoordinateSystems.RightSide_RobToField(SWERVO.getPose());
+       
+    }
+    else {
+        mySwerve = SWERVO.getPose();
+    }
+    field.setRobotPose(CoordinateSystems.FieldMiddle_FieldBottomLeft(mySwerve));
+}
 
 
     //converts coordinate systems to controller set up to combine with odometry
 
    
-Pose2d currentPose = new Pose2d();
+
 
 
 
@@ -226,10 +238,13 @@ Pose2d currentPose = new Pose2d();
     }
 
 isNew = true;
-Rotation2d rotation = currentPose.getRotation().unaryMinus();
-currentPose = new Pose2d(currentPose.getTranslation(), rotation);
-    poseAndTimestamp = new PoseAndTimestamp(currentPose, data[6], LimelightTargetCalculator.calculateCoefficient(currentPose));
+
+
+
+    poseAndTimestamp = new PoseAndTimestamp(currentPose, data[6]);
  SmartDashboard.putBoolean("Has InitPose", hasInitialPose);
+ SmartDashboard.putNumber("xLocalizationVision", currentPose.getX());
+  SmartDashboard.putNumber("yLocalizationVision", currentPose.getY());
   
 
 
@@ -263,12 +278,16 @@ SmartDashboard.putNumber("1 if limelight has detected a note", 1);
    tx.add( llresultsDETECTION.targets_Detector[i].tx);
    ta.add(llresultsDETECTION.targets_Detector[i].ta);
    ty.add(llresultsDETECTION.targets_Detector[i].ty);
+  
 
    }
 }
 else {
     SmartDashboard.putNumber("1 if limelight has detected a note", 0);
 }
+
+
+
 
 
   }
@@ -339,4 +358,10 @@ public double getRotationPID() {
     SmartDashboard.putNumber("backend pid val", rotationPID);
     return rotationPID;
 }
+public void setSwerve(Swerve swervy) {
+    this.SWERVO = swervy;
+    hasSwerve = true;
+
+}
+
 }
