@@ -227,8 +227,8 @@ public final class Constants {
         }
 
         public static final class ClimbConstants {
-            public static final int climbLeftMotorID = 0;
-            public static final int climbRightMotorID = 0;
+            public static final int climbLeftMotorID = 60;
+            public static final int climbRightMotorID = 61;
 
         }
 

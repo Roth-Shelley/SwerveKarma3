@@ -16,18 +16,18 @@ public class Climber extends SubsystemBase {
     RelativeEncoder climbLeftEncoder = climbLeftMotor.getEncoder();
     RelativeEncoder climbRightEncoder = climbRightMotor.getEncoder();
 
-
-
-
     public Climber() {
         climbLeftMotor.restoreFactoryDefaults();
         climbRightMotor.restoreFactoryDefaults();
 
-
-        
         climbLeftEncoder.setPosition(0);
         climbRightEncoder.setPosition(0);
-        
+
+        climbLeftMotor.follow(climbRightMotor, true);
+    }
+
+    public void setClimbMotorSpeed(double speed) {
+        climbRightMotor.set(speed);
     }
     
 }

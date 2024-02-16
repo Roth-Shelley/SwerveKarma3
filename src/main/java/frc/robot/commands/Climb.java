@@ -7,20 +7,19 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
+import frc.robot.subsystems.Climber;
 
 public class Climb extends Command {
+
+
+    
     private CANSparkMax leftMotor = new CANSparkMax(57, MotorType.kBrushless);
     private CANSparkMax rightMotor = new CANSparkMax(41, MotorType.kBrushless);
     private XboxController XBOX;
     private double zCommand = 0;
-    
 
     public Climb(XboxController XBOX) {
         this.XBOX = XBOX;
-
-
-
-
     }
 
     @Override
@@ -31,9 +30,8 @@ public class Climb extends Command {
         leftMotor.set(zCommand);
         rightMotor.follow(leftMotor);
 
-
-        
     }
+
 
     
 }

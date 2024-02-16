@@ -14,6 +14,8 @@ import frc.robot.subsystems.VisionSubsystem;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.Intake;
 import frc.robot.commands.AlignIntake;
+import frc.robot.commands.Climb;
+import frc.robot.subsystems.Climber;
 import frc.robot.commands.TeleopSwerve;
 import frc.robot.subsystems.ShooterAndRamp;
 //import frc.robot.commands.Auto.AutoPaths.autoChooser;
@@ -35,6 +37,7 @@ private final VisionSubsystem vision = new VisionSubsystem();
 private final Swerve s_Swerve = new Swerve(vision);
 private final Intake m_intake = new Intake();
 private final ShooterAndRamp m_ShooterAndRamp = new ShooterAndRamp();
+private final Climb s_climb = new Climb(coDriver);
  
   
  // private final TelescopicArm m_arm = new TelescopicArm();
@@ -55,6 +58,7 @@ private final ShooterAndRamp m_ShooterAndRamp = new ShooterAndRamp();
 
    new Trigger(driver::getXButton).whileTrue(aligner);
    new Trigger(driver::getAButton).onTrue(runOnce(s_Swerve::resetEveything));
+   new Trigger(coDriver::getAButton).onTrue(runOnce(s_climb::execute));
     
     
   }
