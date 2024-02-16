@@ -226,6 +226,12 @@ public final class Constants {
 
         }
 
+        public static final class ClimbConstants {
+            public static final int climbLeftMotorID = 0;
+            public static final int climbRightMotorID = 0;
+
+        }
+
       public static final class Intake{
         public static final int MOTORID = 29;
         public static final int CHINID = 28;
@@ -258,6 +264,15 @@ public final class Constants {
         public static final double length = Units.feetToMeters(54);
         public static final double width = Units.feetToMeters(27);
     }
+
+    public static class PipelineConstants {
+        public static final int SPEAKERBLUE = 3;
+        public static final int pipelineLL2 = 2;
+        public static final int pipelineLL1 = 1;
+        public static final int pipelineLL0 = 0;
+        public static final int SPEAKERRED = 9;
+        public static final int AMPBLUE = 0;
+        public static final int AMPRED = 0;}
 
     public static final class IntakeConstants{
         public final static int intakeMotorID = 21;

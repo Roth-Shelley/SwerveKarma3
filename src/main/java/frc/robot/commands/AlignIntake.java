@@ -173,7 +173,7 @@ public class AlignIntake extends Command {
             rotation = -Constants.Swerve.maxAngularVelocity;
         }
       SmartDashboard.putNumber("rotation setting in alignintake", rotation);
-      SmartDashboard.putString("State of ramp", shooterAndRamp.whichState().toString());
+      SmartDashboard.putString("State of ramp", shooterAndRamp.whichStateAreWeCurrentlyIn().toString());
   
         s_Swerve.drive(translation.times(0.65), -rotation, isFieldRelative);
     }

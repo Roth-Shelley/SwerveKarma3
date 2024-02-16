@@ -363,5 +363,21 @@ public void setSwerve(Swerve swervy) {
     hasSwerve = true;
 
 }
+public void setPipelineLL3(int pipeline) {
+    NetworkTableInstance.getDefault().getTable(LL3name).getEntry("pipeline").setNumber(pipeline);
 
+}
+public void setPipelineLL2(int pipeline) {
+    NetworkTableInstance.getDefault().getTable(LL2name).getEntry("pipeline").setNumber(pipeline);
+}
+
+
+public double getSpeakerDetection() {
+    if (NetworkTableInstance.getDefault().getTable(LL3name).getEntry("tv").getInteger(0) == 1) {
+        return tx.get(0);
+    }
+    else {
+        return 0;
+    }
+}
 }
