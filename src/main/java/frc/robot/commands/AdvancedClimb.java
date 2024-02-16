@@ -9,7 +9,7 @@ public class AdvancedClimb {
 
     public AdvancedClimb(Climber climberSubsystem) {
         this.s_climb = climberSubsystem;
-        addRequirements(climberSubsystem);
+        // addRequirements(climberSubsystem);
 
     }
 

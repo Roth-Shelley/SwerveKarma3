@@ -12,9 +12,10 @@ import edu.wpi.first.math.controller.PIDController;
 import frc.robot.subsystems.VisionSubsystem;
 
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.Constants.Intake;
+import frc.robot.subsystems.Intake;
 import frc.robot.commands.AlignIntake;
 import frc.robot.commands.Climb;
+import frc.robot.commands.IntakeCommand;
 import frc.robot.subsystems.Climber;
 import frc.robot.commands.TeleopSwerve;
 import frc.robot.subsystems.ShooterAndRamp;
@@ -35,7 +36,7 @@ public class RobotContainer {
 //  private final LEDs leds = new LEDs(m_intake);
 private final VisionSubsystem vision = new VisionSubsystem();
 private final Swerve s_Swerve = new Swerve(vision);
-private final Intake m_intake = new Intake();
+private final Intake s_intake = new Intake();
 private final ShooterAndRamp m_ShooterAndRamp = new ShooterAndRamp();
 private final Climb s_climb = new Climb(coDriver);
  
@@ -59,6 +60,7 @@ private final Climb s_climb = new Climb(coDriver);
    new Trigger(driver::getXButton).whileTrue(aligner);
    new Trigger(driver::getAButton).onTrue(runOnce(s_Swerve::resetEveything));
    new Trigger(coDriver::getAButton).onTrue(runOnce(s_climb::execute));
+   new Trigger(driver::getYButton).whileTrue(new IntakeCommand(s_intake));
     
     
   }
