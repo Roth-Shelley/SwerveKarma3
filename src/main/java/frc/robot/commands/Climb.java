@@ -15,6 +15,8 @@ public class Climb extends Command {
     
     private CANSparkMax leftMotor = new CANSparkMax(57, MotorType.kBrushless);
     private CANSparkMax rightMotor = new CANSparkMax(41, MotorType.kBrushless);
+    
+    
     private XboxController XBOX;
     private double zCommand = 0;
 

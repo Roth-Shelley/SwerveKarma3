@@ -17,6 +17,8 @@ public class Climber extends SubsystemBase {
     RelativeEncoder climbLeftEncoder = climbLeftMotor.getEncoder();
     RelativeEncoder climbRightEncoder = climbRightMotor.getEncoder();
 
+    PIDController climbPidController = new PIDController(ClimbConstants.kP, ClimbConstants.kI, ClimbConstants.kD);
+
     public Climber() {
         climbLeftMotor.restoreFactoryDefaults();
         climbRightMotor.restoreFactoryDefaults();
@@ -25,9 +27,9 @@ public class Climber extends SubsystemBase {
         climbRightEncoder.setPosition(0);
 
         climbLeftMotor.follow(climbRightMotor, true);
-        // PIDController pid = new PIDController(Consta, kI, kD);
 
     }
+
 
     public void setClimbMotorSpeed(double speed) {
         climbRightMotor.set(speed);

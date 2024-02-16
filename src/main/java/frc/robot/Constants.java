@@ -229,6 +229,9 @@ public final class Constants {
         public static final class ClimbConstants {
             public static final int climbLeftMotorID = 60;
             public static final int climbRightMotorID = 61;
+            public static final int kP = 0;
+            public static final int kI = 0;
+            public static final int kD = 0;
 
         }
 
