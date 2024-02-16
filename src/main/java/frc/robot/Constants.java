@@ -275,7 +275,7 @@ public final class Constants {
         public static final int AMPRED = 0;}
 
     public static final class IntakeConstants{
-        public final static int intakeMotorID = 21;
+        public final static int intakeMotorID = 20;
     }
     public static final class RampConstants{
                     public final static int rampMotorID = 12;
