@@ -10,6 +10,8 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Robot extends TimedRobot {
   public static CTREConfigs ctreConfigs;
@@ -19,12 +21,22 @@ public class Robot extends TimedRobot {
   
   private RobotContainer m_robotContainer;
 
+  SendableChooser rampStateChooser;
+
   @Override
   public void robotInit() {
     CameraServer.startAutomaticCapture();
     
     ctreConfigs = new CTREConfigs();
     m_robotContainer = new RobotContainer();
+
+    rampStateChooser = new SendableChooser();
+    rampStateChooser.setDefaultOption("HOME", controller);
+    rampStateChooser.addOption("SHOOTING", controller);
+    rampStateChooser.addOption("AMPING", controller);
+    rampStateChooser.addOption("HANDOFF_ARM", controller);
+    SmartDashboard.putData("Ramp State", rampStateChooser);
+
   }
 
   @Override
@@ -56,10 +68,18 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
        m_autonomousCommand.cancel();
      }
+     
   }
 
   @Override
   public void teleopPeriodic() {
+
+    if(rampStateChooser != null) {
+      // if(rampStateChooser.getSelected().equals(whichState(m_robotContainer.m_ShooterAndRamp.currentState))) {
+        m_robotContainer.getShooterAndRamp().executeRampState(rampStateChooser.getSelected().toString());
+      // }
+    }
+
 
   }
 
