@@ -11,9 +11,7 @@ import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.networktables.DoubleArrayTopic;
-
-
-
+import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.RobotState;
@@ -31,9 +29,11 @@ public class VisionSubsystem extends SubsystemBase{
     
 
    // public  Pose2d pose_final;
-   private Pose2d mySwerve;
+   
    private Pose2d currentPose;
-    public Results llresultsDETECTION;
+    public Results llresultsLL3;
+    public Results llresultsLL2;
+
     public double rotation;
     public double timestamp;
     public boolean isNew; // is new pose
@@ -55,7 +55,7 @@ public class VisionSubsystem extends SubsystemBase{
 
     public double translationToTargetX;
     public double translationToTargetY;
-    public String LL2name = "limelight";
+    public String LL2name = "limelight2";
     public String LL3name = "limelight";
 
     NetworkTableEntry botposeEntry;
@@ -73,11 +73,13 @@ public class VisionSubsystem extends SubsystemBase{
 
     ArrayList<Double> txFiducial = new ArrayList<>();
     ArrayList<Double> IndexFiducial = new ArrayList<>();
+     ArrayList<Double> AreaFiducial = new ArrayList<>();
     private double rotationPID = 0;
+    private NetworkTableEntry botposeEntryLL3;
+    private NetworkTableEntry botposeEntryLL2;
 
 
-    Swerve SWERVO;
-    private boolean hasSwerve = false;
+   
     
     
    
@@ -196,37 +198,25 @@ public class VisionSubsystem extends SubsystemBase{
     isBlue = AllianceColor.getSelected();
    
  
-     botposeEntry = NetworkTableInstance.getDefault().getTable(LL2name).getEntry("botpose");
+     
+     botposeEntryLL3 = NetworkTableInstance.getDefault().getTable(LL3name).getEntry("botpose");
 
 
     SmartDashboard.putBoolean("Has InitPose", hasInitialPose);
-    if (NetworkTableInstance.getDefault().getTable(LL2name).getEntry("tv").getInteger(0) == 1) {
+    if (NetworkTableInstance.getDefault().getTable(LL3name).getEntry("tv").getInteger(0) == 1) {
         SmartDashboard.putBoolean("has target", true);
 
         isNew = true;
    
     data = botposeEntry.getDoubleArray(new double[7]);
      currentPoseFIELDRELATIVE = new Pose2d(data[0], data[1], new Rotation2d(data[4]));
-if (hasSwerve) {
-    
-    if (!isBlue) {
-        mySwerve = CoordinateSystems.RightSide_RobToField(SWERVO.getPose());
-       
-    }
-    else {
-        mySwerve = SWERVO.getPose();
-    }
-    field.setRobotPose(CoordinateSystems.FieldMiddle_FieldBottomLeft(mySwerve));
-}
+     field.setRobotPose(CoordinateSystems.FieldMiddle_FieldBottomLeft(currentPoseFIELDRELATIVE));
+
 
 
     //converts coordinate systems to controller set up to combine with odometry
 
    
-
-
-
-
     if (!isBlue) {
          currentPose = CoordinateSystems.RightSide_FieldToRob(currentPoseFIELDRELATIVE);
 
@@ -235,7 +225,9 @@ if (hasSwerve) {
     if (isBlue) {
         currentPose = currentPoseFIELDRELATIVE;
 
-    }    
+    } 
+   
+    
     if (!hasInitialPose) {
         startingpos = currentPose;
         hasInitialPose = true;
@@ -250,7 +242,6 @@ isNew = true;
  SmartDashboard.putNumber("xLocalizationVision", currentPose.getX());
   SmartDashboard.putNumber("yLocalizationVision", currentPose.getY());
   
-
 
 
     }
@@ -271,8 +262,9 @@ isNew = true;
 
 
 
- llresultsDETECTION = LimelightHelpers.getLatestResults(LL3name).targetingResults;
- SmartDashboard.putBoolean("limelight coming through?" , llresultsDETECTION.valid);
+ llresultsLL2 = LimelightHelpers.getLatestResults(LL2name).targetingResults;
+ llresultsLL3 = LimelightHelpers.getLatestResults(LL3name).targetingResults;
+
 
  if (!tx.isEmpty()) {
  tx.clear();
@@ -283,13 +275,14 @@ isNew = true;
  if (!txFiducial.isEmpty()) {
     txFiducial.clear();
     IndexFiducial.clear();
+    AreaFiducial.clear();
  }
- if (NetworkTableInstance.getDefault().getTable(LL3name).getEntry("tv").getInteger(0) == 1.0) {
+ if (NetworkTableInstance.getDefault().getTable(LL2name).getEntry("tv").getInteger(0) == 1.0) {
 SmartDashboard.putNumber("1 if limelight has detected a note", 1);
-   for (int i = 0;  i < llresultsDETECTION.targets_Detector.length; i++) {
-   tx.add( llresultsDETECTION.targets_Detector[i].tx);
-   ta.add(llresultsDETECTION.targets_Detector[i].ta);
-   ty.add(llresultsDETECTION.targets_Detector[i].ty);
+   for (int i = 0;  i < llresultsLL2.targets_Detector.length; i++) {
+   tx.add( llresultsLL2.targets_Detector[i].tx);
+   ta.add(llresultsLL2.targets_Detector[i].ta);
+   ty.add(llresultsLL2.targets_Detector[i].ty);
   
 
    }
@@ -298,25 +291,20 @@ else {
     SmartDashboard.putNumber("1 if limelight has detected a note", 0);
 }
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-for (int i = 0; i < llresultsDETECTION.targets_Fiducials.length; i++) {
-    txFiducial.add(llresultsDETECTION.targets_Fiducials[i].tx);
-    IndexFiducial.add(llresultsDETECTION.targets_Fiducials[i].fiducialID);
-}
-
-
-
-
-
-
+//fiducial detection
+for (int i = 0; i < llresultsLL3.targets_Fiducials.length; i++) {
+    txFiducial.add(llresultsLL3.targets_Fiducials[i].tx);
+    IndexFiducial.add(llresultsLL3.targets_Fiducials[i].fiducialID);
+    AreaFiducial.add(llresultsLL3.targets_Fiducials[i].ta);
 
   }
- }
+ 
 
-     
+}  
+ }
 public double[] getDetection() {
     double[] xNy = {0,0};
-    if (NetworkTableInstance.getDefault().getTable(LL3name).getEntry("tv").getInteger(0) == 1 && !tx.isEmpty()) {
+    if (NetworkTableInstance.getDefault().getTable(LL2name).getEntry("tv").getInteger(0) == 1 && !tx.isEmpty()) {
         double best = 0;
     int bestIndex = 0;
     double AngleofRotationx = 0;
@@ -326,12 +314,7 @@ public double[] getDetection() {
         if (best > tx.get(i)) {
             best = tx.get(i);
             bestIndex = i;
-
-
         }
-
-
-
     }
 
     AngleofRotationx = tx.get(bestIndex) * Math.PI / 180;
@@ -380,11 +363,7 @@ public double getRotationPID() {
     SmartDashboard.putNumber("backend pid val", rotationPID);
     return rotationPID;
 }
-public void setSwerve(Swerve swervy) {
-    this.SWERVO = swervy;
-    hasSwerve = true;
 
-}
 
 public void setPipelineLL3(int index) {
     LimelightHelpers.setPipelineIndex(LL3name, index);
@@ -396,14 +375,43 @@ public void setPipelineLL2(int index) {
 
 public double getSpeakerDetection() {
     double val = 0;
+    boolean yep = false;
     for (int i = 0; i<txFiducial.size(); i++) {
         if(IndexFiducial.get(i) == Constants.PipelineConstants.SPEAKERBLUE) {
             val = txFiducial.get(i);
+            yep = true;
 
         }
 
     }
+    SmartDashboard.putBoolean("8 detected", yep);
+    if (yep != true) {
+        return 10000;
+    }
+    else {
+    
     return val;
+    }
+}
+
+
+public double getBestTargetArea() {
+    double bestarea = 0;
+    if (!AreaFiducial.isEmpty()) {
+    for (double area: AreaFiducial) {
+        if (area > bestarea) {
+            bestarea = area;
+        }
+
+    }
+}
+
+return bestarea;
+    
+}
+
+public int getNumberofAprilTags() {
+    return txFiducial.size();
 }
 
 }

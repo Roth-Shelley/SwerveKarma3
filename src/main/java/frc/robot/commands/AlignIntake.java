@@ -116,7 +116,7 @@ public class AlignIntake extends Command {
     private PIDController PIDController;
     
 
-    public AlignIntake(Swerve s_Swerve, XboxController controller, BooleanSupplier fieldRelative, VisionSubsystem vision, PIDController rotationPID, ShooterAndRamp shooterAndRamp) {
+    public AlignIntake(Swerve s_Swerve, XboxController controller, BooleanSupplier fieldRelative, VisionSubsystem vision, PIDController rotationPID) {
         this.s_Swerve = s_Swerve;
         addRequirements(s_Swerve);
         this.fieldRelative = fieldRelative;
@@ -173,7 +173,7 @@ public class AlignIntake extends Command {
             rotation = -Constants.Swerve.maxAngularVelocity;
         }
       SmartDashboard.putNumber("rotation setting in alignintake", rotation);
-      SmartDashboard.putString("State of ramp", shooterAndRamp.whichStateAreWeCurrentlyIn().toString());
+      //SmartDashboard.putString("State of ramp", shooterAndRamp.whichState().toString());
   
         s_Swerve.drive(translation.times(0.65), -rotation, isFieldRelative);
     }

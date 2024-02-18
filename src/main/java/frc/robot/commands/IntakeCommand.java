@@ -20,6 +20,8 @@ public class IntakeCommand extends Command {
     }
 
     public void end(boolean interrupted) {
+        intake.setIntakeMotorSpeed(0);
+        
     }
 
 }

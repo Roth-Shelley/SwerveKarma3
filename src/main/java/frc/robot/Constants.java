@@ -227,8 +227,11 @@ public final class Constants {
         }
 
         public static final class ClimbConstants {
-            public static final int climbLeftMotorID = 0;
-            public static final int climbRightMotorID = 0;
+            public static final int climbLeftMotorID = 60;
+            public static final int climbRightMotorID = 61;
+            public static final int kP = 0;
+            public static final int kI = 0;
+            public static final int kD = 0;
 
         }
 
@@ -266,15 +269,16 @@ public final class Constants {
     }
 
     public static class PipelineConstants {
-        public static final int SPEAKERBLUE = 8;
+        public static final int SPEAKERBLUE = 7;
         public static final int pipelineLL2 = 2;
         public static final int pipelineLL1 = 1;
         public static final int pipelineLL0 = 0;
         public static final int SPEAKERRED = 9;
         public static final int AMPBLUE = 0;
-        public static final int AMPRED = 0;
-        public static int FiducialTargets;
-        public final static int intakeMotorID = 21;
+        public static final int AMPRED = 0;}
+
+    public static final class IntakeConstants{
+        public final static int intakeMotorID = 20;
     }
     public static final class RampConstants{
                     public final static int rampMotorID = 12;

@@ -4,6 +4,8 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.RampConstants;
@@ -11,6 +13,8 @@ import frc.robot.Constants.RampConstants;
 
 
 public class ShooterAndRamp extends SubsystemBase {
+
+     SendableChooser<States> State = new SendableChooser<>();
 
      CANSparkMax shooterRightMotor = new CANSparkMax(RampConstants.rampMotorID, MotorType.kBrushless);
      CANSparkMax shooterLeftMotor = new CANSparkMax(RampConstants.rampMotorID, MotorType.kBrushless);
@@ -116,6 +120,19 @@ public class ShooterAndRamp extends SubsystemBase {
     @Override
     public void periodic() {
         // This method will be called once per scheduler run
-    }
+        State.addOption("Intaking", States.HOME);
+        State.addOption("IDLING", States.HOME);
+        State.addOption("AMP", States.AMPING);
+        State.addOption("SPEAKER", States.SHOOTING);
+        if (!State.getSelected().toString().equals(currentState)) {
+        currentState = State.getSelected().toString();
+        }
+           
+
+        }
+
+
+        
+    
 
 }

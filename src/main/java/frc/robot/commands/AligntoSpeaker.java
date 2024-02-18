@@ -247,15 +247,21 @@ public AligntoSpeaker(Swerve swerve, VisionSubsystem vision, PIDController rotat
 public void execute() {
      isfieldRelative = fieldrelative.getAsBoolean();
      tx = vision.getSpeakerDetection();
-     if (tx != 10000) {
+     SmartDashboard.putNumber("tx speaker", tx);
+    if (tx != 10000) {
 
      
-    double PidSetpoint = rotationPID.calculate(tx);
-    boolean isFieldRelative = fieldrelative.getAsBoolean();
+     PidSetpoint = rotationPID.calculate(tx);
+     isfieldRelative = fieldrelative.getAsBoolean();
+    SmartDashboard.putBoolean("is aligning to speaker", true);
      }   
      
      else  { 
+        SmartDashboard.putBoolean("is aligning to speaker", false);
 
+         PidSetpoint = 0;
+        isfieldRelative = fieldrelative.getAsBoolean();
+     }
          double yAxis = -xbox.getLeftY();
          double xAxis = -xbox.getLeftX();
     
@@ -277,12 +283,13 @@ public void execute() {
         }
      // SmartDashboard.putNumber("rotation setting in alignintake", rotation);
      // SmartDashboard.putString("State of ramp", shooterAndRamp.whichStateAreWeCurrentlyIn().toString());
-  
+  SmartDashboard.putBoolean("we are driving", true);
+  SmartDashboard.putNumber("PID SETPOINT SPEAKER", PidSetpoint);
         swervy.drive(translation.times(0.65), -PidSetpoint, isfieldRelative);
      
 
 
-}
+
 }
 }
 

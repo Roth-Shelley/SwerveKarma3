@@ -77,7 +77,7 @@ public class Robot extends TimedRobot {
 
     if(rampStateChooser != null) {
       // if(rampStateChooser.getSelected().equals(whichState(m_robotContainer.m_ShooterAndRamp.currentState))) {
-        m_robotContainer.getShooterAndRamp().executeRampState(rampStateChooser.getSelected().toString());
+       // m_robotContainer.getShooterAndRamp().executeRampState(rampStateChooser.getSelected().toString());
       // }
     }
 
