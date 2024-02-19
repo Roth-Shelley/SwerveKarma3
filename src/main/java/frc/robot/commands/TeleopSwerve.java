@@ -48,7 +48,7 @@ public class TeleopSwerve extends Command {
 
          yAxis = -controller.getLeftY();
          xAxis = -controller.getLeftX();
-         rAxis = controller.getRightX();
+         rAxis = -controller.getRightX();
         
         
     

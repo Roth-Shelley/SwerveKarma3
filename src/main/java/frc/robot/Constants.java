@@ -20,6 +20,7 @@ import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.DutyCycle;
 import frc.util.SwerveModuleConstants;
 
 public final class Constants {
@@ -48,10 +49,10 @@ public final class Constants {
         public static final double angleGearRatio = (12.8 / 1.0); //12.8:1
 
         public static final SwerveDriveKinematics kinematics = new SwerveDriveKinematics(
-                new Translation2d(wheelBase / 2.0, trackWidth / 2.0), //FR
-                new Translation2d(wheelBase / 2.0, -trackWidth / 2.0), //BR
-                new Translation2d(-wheelBase / 2.0, trackWidth / 2.0), //FL
-                new Translation2d(-wheelBase / 2.0, -trackWidth / 2.0)); //BL
+                new Translation2d(wheelBase / 2.0, trackWidth / 2.0), //FL
+                new Translation2d(wheelBase / 2.0, -trackWidth / 2.0), //FR
+                new Translation2d(-wheelBase / 2.0, trackWidth / 2.0), //BL
+                new Translation2d(-wheelBase / 2.0, -trackWidth / 2.0)); //BR
 //++, +-, -+, --    FAIL
         /* Swerve Current Limiting */
         public static final int angleContinuousCurrentLimit = 25;
@@ -262,10 +263,27 @@ public final class Constants {
         public final static double minPIDOutput = 0;
         public final static double maxPIDOutput = 0;        
     }
+
+
         
     public static class FieldConstants {
         public static final double length = Units.feetToMeters(54);
         public static final double width = Units.feetToMeters(27);
+    }
+
+    public static class ArmConstants {
+
+        public static final DutyCycle DIO_pivot = null;
+        public static final double PivotGearRatio = 0;
+        public static final int DIO_Intake_LIMITSWITCH = 0;
+        public static final int DIO_Pivot_LIMITSWITCH = 0;
+        public static final int DIO_Extension_LIMITSWITCH = 0;
+        public static final double HOMEANGLE = 0;
+        public static final double INTAKEANGLE = 0;
+        public static final double LENGTHINTAKE = 0;
+        public static double maxAngularV;
+        public static double maxAngularA;
+
     }
 
     public static class PipelineConstants {

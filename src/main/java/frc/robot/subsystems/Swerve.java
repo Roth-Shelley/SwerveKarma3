@@ -56,6 +56,10 @@ public class Swerve extends SubsystemBase {
         SmartDashboard.putData("Field", field);
         this.vision = vision;
         gyro = new AHRS(SPI.Port.kMXP);
+
+        while (gyro.isCalibrating()) {
+            Thread.yield();
+        }
         resetEveything();
 
   
@@ -65,17 +69,18 @@ public class Swerve extends SubsystemBase {
        
         mSwerveMods = new SwerveModule[] {
             new SwerveModule(1, Constants.Swerve.Mod1.constants, Constants.Swerve.Mod1.invertedDrive, Constants.Swerve.Mod1.invertedSteer),
-            new SwerveModule(3, Constants.Swerve.Mod3.constants, Constants.Swerve.Mod3.invertedDrive, Constants.Swerve.Mod3.invertedSteer),
             new SwerveModule(0, Constants.Swerve.Mod0.constants, Constants.Swerve.Mod0.invertedDrive, Constants.Swerve.Mod0.invertedSteer),
+            new SwerveModule(3, Constants.Swerve.Mod3.constants, Constants.Swerve.Mod3.invertedDrive, Constants.Swerve.Mod3.invertedSteer),
             new SwerveModule(2, Constants.Swerve.Mod2.constants, Constants.Swerve.Mod2.invertedDrive, Constants.Swerve.Mod2.invertedSteer),
+            
         };
         
  
  
         SmartDashboard.putNumber("gyroInitReading", getGyro().getDegrees());
-        odometry = new SwerveDrivePoseEstimator(Constants.Swerve.kinematics, new Rotation2d(180), getModulePositions(), new Pose2d(new Translation2d(0, 0), new Rotation2d(0)),
+        odometry = new SwerveDrivePoseEstimator(Constants.Swerve.kinematics, getGyro(), getModulePositions(), new Pose2d(new Translation2d(-8.175+ 0.45, 1.4478), new Rotation2d(180)),
              stateStdDevs, visionMeasurementStdDevs);
-        odometry2 = new SwerveDriveOdometry(Constants.Swerve.kinematics, new Rotation2d(180), getModulePositions());
+        odometry2 = new SwerveDriveOdometry(Constants.Swerve.kinematics, getGyro(), getModulePositions());
 
 
 
@@ -87,8 +92,8 @@ public class Swerve extends SubsystemBase {
 
     public void resetEveything() {
         gyro.zeroYaw();
-        gyro.resetDisplacement();
-        gyro.setAngleAdjustment(180);
+        
+        
     }
 
     public void resetPose(Pose2d pose) {
@@ -104,14 +109,14 @@ public class Swerve extends SubsystemBase {
         SwerveModuleState[] swerveModuleStates =
             Constants.Swerve.kinematics.toSwerveModuleStates(
                 fieldRelative ? ChassisSpeeds.fromFieldRelativeSpeeds(
-                                    translation.getY(), 
                                     translation.getX(), 
+                                    translation.getY(), 
                                     rotation, 
                                     getGyro()
                                 )
                                 : new ChassisSpeeds(
-                                    translation.getY(), 
                                     translation.getX(), 
+                                    translation.getY(), 
                                     rotation)
                                 );
         SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, Constants.Swerve.maxSpeed);
@@ -150,9 +155,9 @@ public class Swerve extends SubsystemBase {
     }
 
     
-
+                                                                                                                                                                               
     public Rotation2d getGyro() {
-        return Rotation2d.fromDegrees(360- gyro.getAngle());
+        return Rotation2d.fromDegrees(Math.IEEEremainder(gyro.getYaw(), 360d) * -1d);
     }
 
     public void resetFieldPosition(){
@@ -171,7 +176,7 @@ public class Swerve extends SubsystemBase {
 
     public void resetGyro(){
         gyro.reset();
-        gyro.resetDisplacement();
+        
     }
 
     @Override
@@ -179,7 +184,6 @@ public class Swerve extends SubsystemBase {
          if (gyro.isConnected() && hasResetGyro == false && !gyro.isCalibrating()) {
              hasResetGyro = true;
              resetEveything();
-             gyro.setAngleAdjustment(180);
          }
          if (hasResetGyro == true) {
             
@@ -209,7 +213,7 @@ public class Swerve extends SubsystemBase {
             SmartDashboard.putNumber("Mod " + mod.moduleNumber + " Integrated", mod.getState().angle.getDegrees());
             SmartDashboard.putNumber("Mod " + mod.moduleNumber + " Velocity", mod.getState().speedMetersPerSecond);    
         }
-        field.setRobotPose(new Pose2d(odometry2.getPoseMeters().getX(), odometry2.getPoseMeters().getY(), getGyro()));
+        field.setRobotPose(CoordinateSystems.FieldMiddle_FieldBottomLeft(new Pose2d(odometry.getEstimatedPosition().getX(), odometry.getEstimatedPosition().getY(), getGyro())));
 
 
 
